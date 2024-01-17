@@ -5,7 +5,7 @@ import '../infrastructure.dart';
 class AuthRespositoryImpl extends AuthRepository {
   final AuthDataSource dataSource;
 
-  AuthRespositoryImpl(AuthDataSource? dataSource)
+  AuthRespositoryImpl({AuthDataSource? dataSource})
       : dataSource = dataSource ?? AuthDataSourceImpl();
 
   @override
