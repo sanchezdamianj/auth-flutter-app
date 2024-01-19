@@ -1,13 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
+import 'auth_provider.dart';
 
 // 3 - How to use it outside - StateNotifierProvider
 //  We add autoDispose to avoid memory leaks, for example if the user is logged, but  did the loggout, and return to the login screen if i am not passing autoDispose, the user is able to reach their credentials, password included.
 
 final loginFormProvider =
     StateNotifierProvider.autoDispose<LoginFormNotifier, LoginFormState>((ref) {
-  return LoginFormNotifier();
+  final loginUserCallback = ref.watch(authProvider.notifier).login;
+
+  return LoginFormNotifier(loginUserCallback: loginUserCallback);
 });
 
 // 1- State of Provider
@@ -53,7 +56,9 @@ class LoginFormState {
 // 2 - How to implement a state notifier
 
 class LoginFormNotifier extends StateNotifier<LoginFormState> {
-  LoginFormNotifier() : super(LoginFormState());
+  final Function(String, String) loginUserCallback;
+  LoginFormNotifier({required this.loginUserCallback})
+      : super(LoginFormState());
 
   onEmailChange(String value) {
     final newEmail = Email.dirty(value);
@@ -68,11 +73,10 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
         isValid: Formz.validate([state.email, newPassword]));
   }
 
-  onFormSubmit() {
+  onFormSubmit() async {
     _touchEveryField();
     if (!state.isValid) return;
-    print(state);
-    // state = state.copyWith(isPosting: true, isFormPosted: true);
+    await loginUserCallback(state.email.value, state.password.value);
   }
 
   // we need to touch every field because the init state is Pure and the form is not valid

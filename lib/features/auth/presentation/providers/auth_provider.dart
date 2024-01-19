@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_shop/features/auth/domain/domain.dart';
 import 'package:teslo_shop/features/auth/infrastructure/infrastructure.dart';
 
-//Provider Auth
+//! 3 - Provider Auth
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authRepository = AuthRespositoryImpl();
@@ -10,7 +11,8 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   return AuthNotifier(authRepository: authRepository);
 });
 
-//Auth State
+//! 2 - Auth State
+
 enum AuthStatus { checking, authenticated, notAuthenticated }
 
 class AuthState {
@@ -35,7 +37,7 @@ class AuthState {
       );
 }
 
-// Auth notif
+// 1 - Auth notif
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository authRepository;
@@ -47,8 +49,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       final user = await authRepository.login(email, password);
       _setLoggeduser(user);
-    } on WrongCredential {
-      logout('Invalid Credentials');
+    } on CustomError catch (e) {
+      logout(e.message);
     } catch (e) {
       logout('Uncontrolled error');
     }
@@ -58,7 +60,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(authStatus: AuthStatus.checking);
   }
 
-  Future<void> logout(String? errorMessage) async {
+  Future<void> logout([String? errorMessage]) async {
     //Todo i need to delete the token
     state = state.copyWith(
         authStatus: AuthStatus.notAuthenticated,
