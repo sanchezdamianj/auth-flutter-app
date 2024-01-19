@@ -1,14 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_shop/features/auth/domain/domain.dart';
 import 'package:teslo_shop/features/auth/infrastructure/infrastructure.dart';
+import 'package:teslo_shop/features/shared/infrastructure/services/key_value_storage_service.dart';
+import 'package:teslo_shop/features/shared/infrastructure/services/key_value_storage_service_impl.dart';
 
 //! 3 - Provider Auth
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authRepository = AuthRespositoryImpl();
-
-  return AuthNotifier(authRepository: authRepository);
+  final keyValueStorageService = KeyValueStorageServiceImpl();
+  return AuthNotifier(
+      authRepository: authRepository,
+      keyValueStorageService: keyValueStorageService);
 });
 
 //! 2 - Auth State
@@ -41,7 +44,10 @@ class AuthState {
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository authRepository;
-  AuthNotifier({required this.authRepository}) : super(AuthState());
+  final KeyValueStorageService keyValueStorageService;
+  AuthNotifier(
+      {required this.authRepository, required this.keyValueStorageService})
+      : super(AuthState());
 
   Future<void> login(String email, String password) async {
     await Future.delayed(const Duration(seconds: 2));
@@ -61,15 +67,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> logout([String? errorMessage]) async {
-    //Todo i need to delete the token
+    // i need to delete the token
+    await keyValueStorageService.removeKey('token');
     state = state.copyWith(
         authStatus: AuthStatus.notAuthenticated,
         user: null,
         errorMessage: errorMessage);
   }
 
-  void _setLoggeduser(User user) {
-    //Todo i need to save the token
+  void _setLoggeduser(User user) async {
+    await keyValueStorageService.setValueValue('token', user.token);
+    //i need to save the token
     state = state.copyWith(
         user: user, authStatus: AuthStatus.authenticated, errorMessage: '');
   }
