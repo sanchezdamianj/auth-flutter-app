@@ -17,9 +17,13 @@ class AuthDataSourceImpl extends AuthDataSource {
       final user = UserMapper.userJsonToEntity(response.data);
       return Future.value(user);
     } on DioException catch (e) {
-      print(e);
-      throw UnimplementedError();
-    } catch (e) {
+      if (e.response?.statusCode == 401) {
+        throw CustomError('token invalid');
+      }
+      if (e.type == DioExceptionType.connectionTimeout) {
+        throw CustomError('Connection Timeout');
+      }
+
       throw Exception();
     }
   }

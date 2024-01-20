@@ -89,7 +89,7 @@ class _LoginForm extends ConsumerWidget {
           ),
           const SizedBox(height: 10),
           CustomTextFormField(
-            label: 'Contraseña',
+            label: 'Password',
             obscureText: true,
             onChanged: ref.read(loginFormProvider.notifier).onPasswordChange,
             errorMessage:
@@ -100,11 +100,13 @@ class _LoginForm extends ConsumerWidget {
               width: double.infinity,
               height: 60,
               child: CustomFilledButton(
-                text: 'Ingresar',
+                text: 'Sign in',
                 buttonColor: Colors.black,
-                onPressed: () {
-                  ref.read(loginFormProvider.notifier).onFormSubmit();
-                },
+                onPressed: loginForm.isPosting
+                    ? null
+                    : () {
+                        ref.read(loginFormProvider.notifier).onFormSubmit();
+                      },
               )),
           const Spacer(flex: 2),
           Row(

@@ -76,7 +76,10 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
   onFormSubmit() async {
     _touchEveryField();
     if (!state.isValid) return;
+
+    state = state.copyWith(isPosting: true);
     await loginUserCallback(state.email.value, state.password.value);
+    state = state.copyWith(isPosting: false, isFormPosted: true);
   }
 
   // we need to touch every field because the init state is Pure and the form is not valid
