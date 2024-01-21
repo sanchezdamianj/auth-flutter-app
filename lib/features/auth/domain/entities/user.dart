@@ -16,4 +16,8 @@ class User {
   bool get isAdmin {
     return roles.contains('admin');
   }
+
+  static fromJson(json) {}
+
+  toJson() {}
 }

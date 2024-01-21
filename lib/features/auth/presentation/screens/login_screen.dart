@@ -92,22 +92,53 @@ class _LoginForm extends ConsumerWidget {
             label: 'Password',
             obscureText: true,
             onChanged: ref.read(loginFormProvider.notifier).onPasswordChange,
+            onFieldSubmitted: (_) {
+              ref.read(loginFormProvider.notifier).onFormSubmit();
+            },
             errorMessage:
                 loginForm.isFormPosted ? loginForm.password.errorMessage : null,
           ),
           const SizedBox(height: 10),
+          // SizedBox(
+          //     width: double.infinity,
+          //     height: 60,
+          //     child: CustomFilledButton(
+          //       text: 'Sign in',
+          //       buttonColor: Colors.black,
+          //       onPressed: loginForm.isPosting
+          //           ? null
+          //           : () {
+          //               ref.read(loginFormProvider.notifier).onFormSubmit();
+          //             },
+          //     )),
           SizedBox(
-              width: double.infinity,
-              height: 60,
-              child: CustomFilledButton(
-                text: 'Sign in',
-                buttonColor: Colors.black,
-                onPressed: loginForm.isPosting
-                    ? null
-                    : () {
-                        ref.read(loginFormProvider.notifier).onFormSubmit();
-                      },
-              )),
+            width: double.infinity,
+            height: 60,
+            child: ElevatedButton(
+              onPressed: loginForm.isPosting
+                  ? null
+                  : () {
+                      ref.read(loginFormProvider.notifier).onFormSubmit();
+                    },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.disabled)) {
+                      return Colors.grey;
+                    }
+                    return Colors.black;
+                  },
+                ),
+              ),
+              child: loginForm.isPosting
+                  ? const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    )
+                  : const Text('Sign in',
+                      style: TextStyle(fontSize: 16, color: Colors.white)),
+            ),
+          ),
+
           const Spacer(flex: 2),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
