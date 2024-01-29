@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
+
 import 'products_repository_provider.dart';
 
 //StateProvider
@@ -37,9 +38,10 @@ class ProductsState {
 
 // State Notifier Provider
 
-class ProductNotifier extends StateNotifier<ProductsState> {
+class ProductsNotifier extends StateNotifier<ProductsState> {
   final ProductsRepository productsRepository;
-  ProductNotifier({required this.productsRepository}) : super(ProductsState()) {
+  ProductsNotifier({required this.productsRepository})
+      : super(ProductsState()) {
     //When the first instance is created, we call loadNextPage;
     loadNextPage();
   }
@@ -71,7 +73,7 @@ class ProductNotifier extends StateNotifier<ProductsState> {
 
 //Provider del State Notifier que ata a la instancia de ProductsNotifier con el State
 final productsProvider =
-    StateNotifierProvider<ProductNotifier, ProductsState>((ref) {
+    StateNotifierProvider<ProductsNotifier, ProductsState>((ref) {
   final productsRepository = ref.watch(productsRepositoryProvider);
-  return ProductNotifier(productsRepository: productsRepository);
+  return ProductsNotifier(productsRepository: productsRepository);
 });
