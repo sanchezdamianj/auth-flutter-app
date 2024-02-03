@@ -48,7 +48,7 @@ class Product {
         stock: json["stock"],
         sizes: List<String>.from(json["sizes"].map((x) => x)),
         gender: json["gender"],
-        // tags: List<String>.from(json["tags"].map((x) => tags.map(x)!)),
+        // tags: List<String>.from(json["tags"].map((x) => tags.map(x))),
         images: List<String>.from(json["images"].map((x) => x)),
         user: User.fromJson(json["user"]),
       );
