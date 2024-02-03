@@ -8,6 +8,15 @@ class ProductScreen extends ConsumerWidget {
   final String productId;
   const ProductScreen({super.key, required this.productId});
 
+  void showSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Product updated'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productState = ref.watch(productProvider(productId));
@@ -30,7 +39,11 @@ class ProductScreen extends ConsumerWidget {
           if (productState.product == null) return;
           ref
               .read(productFormProvider(productState.product!).notifier)
-              .onFormSubmit();
+              .onFormSubmit()
+              .then((value) {
+            if (!value) return;
+            showSnackbar(context);
+          });
         },
         child: const Icon(Icons.save_sharp),
       ),
@@ -57,7 +70,12 @@ class _ProductView extends ConsumerWidget {
         ),
         const SizedBox(height: 10),
         Center(
-            child: Text(productForm.title.value, style: textStyles.titleSmall)),
+          child: Text(productForm.title.value,
+              style: textStyles.titleSmall,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis),
+        ),
         const SizedBox(height: 10),
         _ProductInformation(product: product),
       ],
@@ -143,14 +161,6 @@ class _ProductInformation extends ConsumerWidget {
                   .onDescriptionChanged(value);
             },
           ),
-          const CustomProductField(
-            isBottomField: true,
-            maxLines: 2,
-            label: 'Tags (Split by comma)',
-            keyboardType: TextInputType.multiline,
-            // initialValue: product.tags.join(', '),
-          ),
-          const SizedBox(height: 100),
         ],
       ),
     );
