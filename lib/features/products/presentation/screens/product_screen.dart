@@ -28,7 +28,23 @@ class ProductScreen extends ConsumerWidget {
           title: const Text('EditProduct'),
           actions: [
             IconButton(
-                onPressed: () {}, icon: const Icon(Icons.camera_alt_outlined))
+                onPressed: () async {
+                  final photoPath =
+                      await CameraGalleryServiceImpl().selectPhoto();
+                  if (photoPath == null) {
+                    return;
+                  }
+                },
+                icon: const Icon(Icons.photo_library_outlined)),
+            IconButton(
+                onPressed: () async {
+                  final photoPath =
+                      await CameraGalleryServiceImpl().takePhoto();
+                  if (photoPath == null) {
+                    return;
+                  }
+                },
+                icon: const Icon(Icons.camera_alt_outlined)),
           ],
         ),
         body: Center(
@@ -244,7 +260,7 @@ class _ImageGallery extends StatelessWidget {
           ? [
               ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  child: Image.asset('assets/images/no-image.jpg',
+                  child: Image.asset('assets/images/no-image.png',
                       fit: BoxFit.cover))
             ]
           : images.map((e) {
