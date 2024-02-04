@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:dio/dio.dart';
 import 'package:teslo_shop/config/constants/environment.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
@@ -16,9 +18,10 @@ class ProductsDatasourceImpl extends ProductsDataSource {
   @override
   Future<Product> createUpdateProduct(Map<String, dynamic> likeProduct) async {
     try {
-      final String productId = likeProduct['id'];
-      final String method = (productId.isEmpty) ? 'POST' : 'PATCH';
-      final String url = (productId.isEmpty) ? '/post' : '/products/$productId';
+      final String productId = likeProduct['id'] ?? '';
+      final String method = (productId == '') ? 'POST' : 'PATCH';
+      final String url =
+          (productId == '') ? '/products' : '/products/$productId';
       likeProduct.remove('id');
 
       final response = await dio.request(

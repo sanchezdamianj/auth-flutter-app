@@ -36,7 +36,7 @@ class Product {
     required this.gender,
     // this.tags = const [],
     required this.images,
-    required this.user,
+    this.user,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(

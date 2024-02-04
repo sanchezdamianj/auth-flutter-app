@@ -31,4 +31,5 @@ flutter:
     - .env
     - assets/loaders/
     - assets/images/
+    - assets/images/no-image.png
     - google_fonts/montserrat_alternates/
